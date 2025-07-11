@@ -106,3 +106,10 @@ This system is ideal for workers in high-risk environments such as:
 **Mathusayini Thayalanesan**
 
 ---
+
+## 🎥 Demo Video
+
+Watch the final demonstration of the AI-Powered Smart Glove project here:  
+[![Demo Video](https://img.youtube.com/vi/b_JVvI8ynJI/0.jpg)](https://youtu.be/b_JVvI8ynJI)
+
+Or click this link: [https://youtu.be/b_JVvI8ynJI](https://youtu.be/b_JVvI8ynJI)
