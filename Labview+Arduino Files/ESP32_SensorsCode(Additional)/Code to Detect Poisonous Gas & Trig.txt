@@ -1,0 +1,37 @@
+Code to Detect Poisonous Gas & Trigger Alarm
+
+#define MQ135_PIN 34   // Analog pin for gas sensor
+const int buzzerPin = 5; // Buzzer for alarm
+const int ledPin = 6;    // LED warning indicator
+
+void setup() {
+    Serial.begin(115200);
+    pinMode(buzzerPin, OUTPUT);
+    pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+    int gasValue = analogRead(MQ135_PIN);  // Read sensor value
+    Serial.print("Gas Level: ");
+    Serial.println(gasValue);
+
+    // Gas threshold values (adjust based on calibration)
+    if (gasValue > 400) {  // Moderate pollution
+        Serial.println("⚠️ Warning: Air Quality is Bad!");
+        digitalWrite(ledPin, HIGH);
+        tone(buzzerPin, 1000, 500);  // Short beep
+    }
+    else if (gasValue > 600) {  // Dangerous gas levels
+        Serial.println("🚨 Danger! Poisonous Gas Detected!");
+        digitalWrite(ledPin, HIGH);
+        tone(buzzerPin, 2000, 2000); // Continuous alarm
+    }
+    else {
+        Serial.println("✅ Air Quality is Safe.");
+        digitalWrite(ledPin, LOW);
+        noTone(buzzerPin);
+    }
+
+    delay(2000); // Read gas level every 2 seconds
+}
+

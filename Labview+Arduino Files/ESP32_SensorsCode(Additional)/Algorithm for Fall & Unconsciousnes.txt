@@ -1,0 +1,74 @@
+Algorithm for Fall & Unconsciousness Detection
+
+#include <Wire.h>
+#include <MPU6050.h>
+
+MPU6050 mpu;
+
+float accX, accY, accZ;
+float gyroX, gyroY, gyroZ;
+unsigned long lastMovementTime = 0;
+bool fallDetected = false;
+
+void setup() {
+    Serial.begin(115200);
+    Wire.begin();
+    mpu.initialize();
+    
+    if (!mpu.testConnection()) {
+        Serial.println("MPU6050 connection failed!");
+        while (1);
+    }
+}
+
+void loop() {
+    // Read Accelerometer & Gyroscope Data
+    int16_t ax, ay, az, gx, gy, gz;
+    mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+
+    // Convert raw values to g-forces
+    accX = ax / 16384.0;
+    accY = ay / 16384.0;
+    accZ = az / 16384.0;
+    
+    // Convert gyroscope values
+    gyroX = gx / 131.0;
+    gyroY = gy / 131.0;
+    gyroZ = gz / 131.0;
+
+    // Compute total acceleration
+    float totalAcc = sqrt(accX * accX + accY * accY + accZ * accZ);
+
+    // Detect Free Fall (Acceleration drops below 2 m/s²)
+    if (totalAcc < 0.2) {
+        Serial.println("⚠️ Free Fall Detected!");
+        fallDetected = true;
+    }
+
+    // Detect Impact (Sudden acceleration spike)
+    if (totalAcc > 1.5 && fallDetected) {
+        Serial.println("💥 Impact Detected!");
+        fallDetected = false;
+        lastMovementTime = millis();
+    }
+
+    // Check for Inactivity (Unconsciousness)
+    if (totalAcc < 0.1 && abs(gyroX) < 3 && abs(gyroY) < 3 && abs(gyroZ) < 3) {
+        if (millis() - lastMovementTime > 10000) {
+            Serial.println("🚨 Worker Unconscious! Triggering Alarm...");
+            // Add code for buzzer, vibration, or wireless alert
+        }
+    }
+
+    delay(100);
+}
+
+
+
+
+ Alarm System
+
+digitalWrite(buzzerPin, HIGH);  // Turn on buzzer
+digitalWrite(ledPin, HIGH);      // Turn on LED
+// Send alert wirelessly
+
